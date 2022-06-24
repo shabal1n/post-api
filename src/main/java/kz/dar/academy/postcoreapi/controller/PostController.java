@@ -16,6 +16,11 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    @GetMapping("/check")
+    public ResponseEntity<String> check() {
+        return new ResponseEntity<>("post-core-api is working", HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<String> createPost(@RequestBody PostModel postModel) {
         postService.createPost(postModel);
