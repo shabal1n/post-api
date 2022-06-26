@@ -3,6 +3,8 @@ package kz.dar.academy.postcoreapi.controller;
 import kz.dar.academy.postcoreapi.model.PostModel;
 import kz.dar.academy.postcoreapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +13,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+@EnableEurekaClient
 public class PostController {
 
+    @Autowired
+    private Environment env;
     @Autowired
     private PostService postService;
 
     @GetMapping("/check")
     public ResponseEntity<String> check() {
-        return new ResponseEntity<>("post-core-api is working", HttpStatus.OK);
+        return new ResponseEntity<>("post-core-api is working at " + env.getProperty("local.server.port"), HttpStatus.OK);
     }
 
     @PostMapping
