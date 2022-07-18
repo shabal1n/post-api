@@ -1,8 +1,7 @@
 package kz.dar.academy.postcoreapi.controller;
 
-import kz.dar.academy.postcoreapi.model.PostRequest;
-import kz.dar.academy.postcoreapi.model.PostResponse;
-import kz.dar.academy.postcoreapi.service.post.PostService;
+import kz.dar.academy.postcoreapi.model.PostModel;
+import kz.dar.academy.postcoreapi.service.deprecated.PostServiceOld;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.core.env.Environment;
@@ -13,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/deprecated/post")
 @EnableEurekaClient
-public class PostController {
+public class PostControllerOld {
 
     @Autowired
     private Environment env;
     @Autowired
-    private PostService postService;
+    private PostServiceOld postServiceOld;
 
     @GetMapping("/check")
     public ResponseEntity<String> check() {
@@ -28,28 +27,31 @@ public class PostController {
     }
 
     @PostMapping
-    public PostResponse createPost(@RequestBody PostRequest postModel) {
-        return postService.createPost(postModel);
+    public ResponseEntity<String> createPost(@RequestBody PostModel postModel) {
+        postServiceOld.createPost(postModel);
+        return new ResponseEntity<>("Post was added", HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
-    public PostResponse updatePostById(@RequestBody PostRequest postModel) {
-        return postService.updatePostById(postModel);
+    public ResponseEntity<String> updatePostById(@PathVariable String postId,
+                                                 @RequestBody PostModel postModel) {
+        postServiceOld.updatePostById(postId, postModel);
+        return new ResponseEntity<>("Post was updated", HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public List<PostResponse> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostModel> getAllPosts() {
+        return postServiceOld.getAllPosts();
     }
 
     @GetMapping("/{postId}")
-    public PostResponse getPostById(@PathVariable String postId) {
-        return postService.getPostById(postId);
+    public PostModel getPostById(@PathVariable String postId) {
+        return postServiceOld.getPostById(postId);
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePostById(@PathVariable String postId) {
-        postService.deletePostById(postId);
+        postServiceOld.deletePostById(postId);
         return new ResponseEntity<>("Deleted a post", HttpStatus.OK);
     }
 }
